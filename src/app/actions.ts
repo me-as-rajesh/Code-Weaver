@@ -7,7 +7,7 @@ export async function generateCodeAction(prompt: string): Promise<{ code: string
     return { code: "", error: "Prompt cannot be empty." };
   }
   try {
-    const result = await generateCode({ prompt: `Generate a single block of HTML with inline CSS and JS if necessary based on this prompt: ${prompt}. Do not include any explanations, just the code.` });
+    const result = await generateCode({ prompt });
     
     // Clean up the response to remove markdown code fences
     const cleanedCode = result.code.replace(/^```(html)?\n/i, '').replace(/\n```$/, '');

@@ -13,13 +13,10 @@ import { Card, CardContent } from "@/components/ui/card";
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [generatedCode, setGeneratedCode] = useState(
-    `<!-- Welcome to Code Weaver! -->
-<!-- Enter a prompt and see the magic happen. -->
-<div style="display: flex; justify-content: center; align-items: center; height: 100%; font-family: sans-serif; background-color: #f0f0f0; border-radius: 0.5rem;">
-  <div style="text-align: center;">
-    <h1 style="font-size: 2rem; color: #333;">Live Preview</h1>
-    <p style="color: #666;">Your generated code will appear here.</p>
-  </div>
+    `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; font-family: 'Inter', sans-serif; background: linear-gradient(135deg, hsl(222.2, 47.4%, 11.2%), hsl(210, 40%, 50%)); color: white; border-radius: 0.5rem; text-align: center; padding: 2rem;">
+  <h1 style="font-size: 2.5rem; font-weight: bold; margin-bottom: 1rem;">Welcome to Code Weaver</h1>
+  <p style="font-size: 1.1rem; max-width: 500px; margin-bottom: 2rem;">Describe the UI you want to build. You can even ask for images, like "a hero section for a space agency with a picture of a nebula".</p>
+  <p style="font-size: 0.9rem; opacity: 0.7;">Your live preview will appear here.</p>
 </div>`
   );
   const [isLoading, setIsLoading] = useState(false);
