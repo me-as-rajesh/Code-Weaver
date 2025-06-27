@@ -33,7 +33,6 @@ export default function Home() {
       return;
     }
     setIsLoading(true);
-    setGeneratedCode("");
 
     const result = await generateCodeAction(prompt);
 
@@ -91,7 +90,11 @@ export default function Home() {
 
       <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-4 min-h-0">
         <div className="flex flex-col min-h-0">
-          <CodeEditor code={generatedCode} isLoading={isLoading} />
+          <CodeEditor
+            code={generatedCode}
+            isLoading={isLoading}
+            onCodeChange={setGeneratedCode}
+          />
         </div>
         <div className="flex flex-col min-h-0">
           <LivePreview code={generatedCode} />

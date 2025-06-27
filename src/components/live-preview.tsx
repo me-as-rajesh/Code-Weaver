@@ -14,8 +14,6 @@ export function LivePreview({ code }: LivePreviewProps) {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
         margin: 0;
         padding: 1rem;
-        color: #111827;
-        background-color: #ffffff;
       }
     </style>
     ${code}

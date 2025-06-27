@@ -1,21 +1,20 @@
 "use client";
 
 import { useState } from 'react';
-import { useTypewriter } from '@/hooks/use-typewriter';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from './ui/skeleton';
 import { Button } from "@/components/ui/button";
 import { Copy, Check } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { Textarea } from '@/components/ui/textarea';
 
 interface CodeEditorProps {
   code: string;
   isLoading: boolean;
+  onCodeChange: (newCode: string) => void;
 }
 
-export function CodeEditor({ code, isLoading }: CodeEditorProps) {
-  const displayedCode = useTypewriter(code, 5);
+export function CodeEditor({ code, isLoading, onCodeChange }: CodeEditorProps) {
   const { toast } = useToast();
   const [isCopied, setIsCopied] = useState(false);
 
@@ -53,23 +52,22 @@ export function CodeEditor({ code, isLoading }: CodeEditorProps) {
         </Button>
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden p-0">
-        <ScrollArea className="h-full">
-          <div className="p-4 pt-0 h-full">
-             {isLoading ? (
-                <div className="space-y-2">
-                    <Skeleton className="h-4 w-11/12" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-10/12" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-8/12" />
-                </div>
-            ) : (
-                <pre className="h-full text-sm">
-                    <code className="font-code text-sm whitespace-pre-wrap">{displayedCode}</code>
-                </pre>
-             )}
+        {isLoading ? (
+          <div className="p-4 space-y-2">
+              <Skeleton className="h-4 w-11/12" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-10/12" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-8/12" />
           </div>
-        </ScrollArea>
+        ) : (
+          <Textarea
+            value={code}
+            onChange={(e) => onCodeChange(e.target.value)}
+            className="h-full w-full resize-none border-0 rounded-t-none p-4 font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+            placeholder="Your generated code will appear here..."
+          />
+        )}
       </CardContent>
     </Card>
   );
