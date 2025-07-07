@@ -1,6 +1,7 @@
 "use server";
 
 import { generateCode } from "@/ai/flows/generate-code";
+import { improveCode } from "@/ai/flows/improve-code";
 
 export async function generateCodeAction(prompt: string): Promise<{ code: string; error?: string }> {
   if (!prompt) {
@@ -17,5 +18,25 @@ export async function generateCodeAction(prompt: string): Promise<{ code: string
     console.error("Code generation failed:", error);
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
     return { code: "", error: `An error occurred while generating code: ${errorMessage}` };
+  }
+}
+
+export async function improveCodeAction({ code, prompt }: { code: string; prompt: string }): Promise<{ improvedCode: string; error?: string }> {
+  if (!prompt) {
+    return { improvedCode: code, error: "Improvement instructions cannot be empty." };
+  }
+  if (!code) {
+      return { improvedCode: "", error: "No code to improve." };
+  }
+  try {
+    const result = await improveCode({ code, prompt });
+    
+    const cleanedCode = result.improvedCode.replace(/^```(html)?\n/i, '').replace(/\n```$/, '');
+
+    return { improvedCode: cleanedCode };
+  } catch (error) {
+    console.error("Code improvement failed:", error);
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+    return { improvedCode: code, error: `An error occurred while improving code: ${errorMessage}` };
   }
 }

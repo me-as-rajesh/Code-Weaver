@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { SendHorizonal, Loader, Code } from "lucide-react";
+import { SendHorizonal, Loader, Code, Wand2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { CodeEditor } from "@/components/code-editor";
 import { LivePreview } from "@/components/live-preview";
-import { generateCodeAction } from "@/app/actions";
+import { generateCodeAction, improveCodeAction } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -20,7 +20,10 @@ export default function Home() {
 </div>`
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [isImproving, setIsImproving] = useState(false);
   const { toast } = useToast();
+
+  const isInitialCode = generatedCode.includes("Welcome to Code Weaver");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,13 +52,42 @@ export default function Home() {
     setIsLoading(false);
   };
 
+  const handleImprove = async () => {
+    if (!prompt.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter improvement instructions in the text area.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsImproving(true);
+    const result = await improveCodeAction({ code: generatedCode, prompt });
+    if (result.error) {
+      toast({
+        title: "Error",
+        description: result.error,
+        variant: "destructive",
+      });
+    } else {
+      setGeneratedCode(result.improvedCode);
+    }
+    setIsImproving(false);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-background text-foreground p-4 gap-4 overflow-hidden">
-      <header className="flex-shrink-0 flex items-center justify-center gap-2">
-         <Code className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold text-center font-headline">
-          Code Weaver
-        </h1>
+      <header className="flex-shrink-0 flex items-center justify-between gap-2">
+         <div className="flex items-center gap-2">
+            <Code className="h-8 w-8 text-primary" />
+            <h1 className="text-3xl font-bold font-headline">
+              Code Weaver
+            </h1>
+         </div>
+         <Button onClick={handleImprove} disabled={isLoading || isImproving || isInitialCode}>
+              {isImproving ? <Loader className="animate-spin mr-2" /> : <Wand2 className="mr-2" />}
+              Improve
+          </Button>
       </header>
       
       <Card className="flex-shrink-0">
@@ -67,7 +99,7 @@ export default function Home() {
               onChange={(e) => setPrompt(e.target.value)}
               className="resize-none font-body flex-grow text-base"
               rows={2}
-              disabled={isLoading}
+              disabled={isLoading || isImproving}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
@@ -75,7 +107,7 @@ export default function Home() {
                 }
               }}
             />
-            <Button type="submit" size="lg" disabled={isLoading} className="w-full sm:w-auto">
+            <Button type="submit" size="lg" disabled={isLoading || isImproving} className="w-full sm:w-auto">
               {isLoading ? (
                 <Loader className="animate-spin mr-2" />
               ) : (
