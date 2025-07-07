@@ -6,19 +6,43 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { convertCodeAction } from "@/app/actions";
+import { Loader, Wand2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CodeConverterPage() {
   const [inputCode, setInputCode] = useState("");
   const [targetLanguage, setTargetLanguage] = useState("python");
   const [outputCode, setOutputCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
-  const handleConvert = () => {
+  const handleConvert = async () => {
     if (!inputCode.trim()) {
-      setOutputCode("Please enter some code to convert.");
+      toast({
+        title: "Error",
+        description: "Please enter some code to convert.",
+        variant: "destructive",
+      });
       return;
     }
-    const converted = `// Language auto-detected. Converted to ${targetLanguage}\n// (Conversion logic not implemented)\n\n${inputCode}`;
-    setOutputCode(converted);
+    setIsLoading(true);
+    setOutputCode(""); 
+
+    const result = await convertCodeAction({ inputCode, targetLanguage });
+
+    if (result.error) {
+      toast({
+        title: "Error",
+        description: result.error,
+        variant: "destructive",
+      });
+      setOutputCode(`// Error converting code: ${result.error}`);
+    } else {
+      setOutputCode(result.convertedCode);
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -44,11 +68,12 @@ export default function CodeConverterPage() {
                   value={inputCode}
                   onChange={(e) => setInputCode(e.target.value)}
                   className="h-64 mt-1 font-code"
+                  disabled={isLoading}
                 />
               </div>
               <div>
                 <Label htmlFor="targetLanguage" className="font-semibold text-slate-700">Target Language</Label>
-                <Select value={targetLanguage} onValueChange={setTargetLanguage}>
+                <Select value={targetLanguage} onValueChange={setTargetLanguage} disabled={isLoading}>
                   <SelectTrigger id="targetLanguage" className="mt-1">
                     <SelectValue placeholder="Select target language" />
                   </SelectTrigger>
@@ -73,13 +98,24 @@ export default function CodeConverterPage() {
             <div className="space-y-1 flex flex-col">
                <Label htmlFor="outputCode" className="font-semibold text-slate-700">Output</Label>
                <div className="bg-slate-100 p-4 rounded-md flex-grow overflow-auto mt-1">
-                <pre id="outputCode" className="text-sm text-slate-800 whitespace-pre-wrap font-code">{outputCode || "Converted code will appear here."}</pre>
+                {isLoading ? (
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-11/12 bg-slate-300" />
+                    <Skeleton className="h-4 w-full bg-slate-300" />
+                    <Skeleton className="h-4 w-10/12 bg-slate-300" />
+                    <Skeleton className="h-4 w-full bg-slate-300" />
+                    <Skeleton className="h-4 w-8/12 bg-slate-300" />
+                  </div>
+                ) : (
+                  <pre id="outputCode" className="text-sm text-slate-800 whitespace-pre-wrap font-code">{outputCode || "Converted code will appear here."}</pre>
+                )}
                </div>
             </div>
           </div>
           
           <div className="text-center pt-4">
-            <Button onClick={handleConvert} size="lg" className="bg-green-600 text-white hover:bg-green-700">
+            <Button onClick={handleConvert} size="lg" className="bg-green-600 text-white hover:bg-green-700" disabled={isLoading}>
+              {isLoading ? <Loader className="animate-spin mr-2" /> : <Wand2 className="mr-2" />}
               Convert
             </Button>
           </div>
