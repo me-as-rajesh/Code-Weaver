@@ -9,7 +9,6 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default function CodeConverterPage() {
   const [inputCode, setInputCode] = useState("");
-  const [sourceLanguage, setSourceLanguage] = useState("javascript");
   const [targetLanguage, setTargetLanguage] = useState("python");
   const [outputCode, setOutputCode] = useState("");
 
@@ -18,7 +17,7 @@ export default function CodeConverterPage() {
       setOutputCode("Please enter some code to convert.");
       return;
     }
-    const converted = `// Converted from ${sourceLanguage} to ${targetLanguage}\n// (Conversion logic not implemented)\n\n${inputCode}`;
+    const converted = `// Language auto-detected. Converted to ${targetLanguage}\n// (Conversion logic not implemented)\n\n${inputCode}`;
     setOutputCode(converted);
   };
 
@@ -31,7 +30,7 @@ export default function CodeConverterPage() {
             Code Converter
           </CardTitle>
           <CardDescription className="text-center pt-1">
-            Translate code between different programming languages.
+            Translate code between different programming languages. The source language is automatically detected.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -47,35 +46,27 @@ export default function CodeConverterPage() {
                   className="h-64 mt-1 font-code"
                 />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                 <div>
-                    <Label htmlFor="sourceLanguage" className="font-semibold text-slate-700">Source Language</Label>
-                    <Select value={sourceLanguage} onValueChange={setSourceLanguage}>
-                      <SelectTrigger id="sourceLanguage" className="mt-1">
-                        <SelectValue placeholder="Select source language" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="javascript">JavaScript</SelectItem>
-                        <SelectItem value="python">Python</SelectItem>
-                        <SelectItem value="java">Java</SelectItem>
-                        <SelectItem value="c++">C++</SelectItem>
-                      </SelectContent>
-                    </Select>
-                 </div>
-                 <div>
-                    <Label htmlFor="targetLanguage" className="font-semibold text-slate-700">Target Language</Label>
-                    <Select value={targetLanguage} onValueChange={setTargetLanguage}>
-                      <SelectTrigger id="targetLanguage" className="mt-1">
-                        <SelectValue placeholder="Select target language" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="python">Python</SelectItem>
-                        <SelectItem value="javascript">JavaScript</SelectItem>
-                        <SelectItem value="java">Java</SelectItem>
-                        <SelectItem value="c++">C++</SelectItem>
-                      </SelectContent>
-                    </Select>
-                 </div>
+              <div>
+                <Label htmlFor="targetLanguage" className="font-semibold text-slate-700">Target Language</Label>
+                <Select value={targetLanguage} onValueChange={setTargetLanguage}>
+                  <SelectTrigger id="targetLanguage" className="mt-1">
+                    <SelectValue placeholder="Select target language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="python">Python</SelectItem>
+                    <SelectItem value="javascript">JavaScript</SelectItem>
+                    <SelectItem value="typescript">TypeScript</SelectItem>
+                    <SelectItem value="java">Java</SelectItem>
+                    <SelectItem value="csharp">C#</SelectItem>
+                    <SelectItem value="c++">C++</SelectItem>
+                    <SelectItem value="go">Go</SelectItem>
+                    <SelectItem value="ruby">Ruby</SelectItem>
+                    <SelectItem value="swift">Swift</SelectItem>
+                    <SelectItem value="rust">Rust</SelectItem>
+                    <SelectItem value="php">PHP</SelectItem>
+                    <SelectItem value="kotlin">Kotlin</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
