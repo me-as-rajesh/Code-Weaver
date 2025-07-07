@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { SendHorizonal, Loader, Code, Wand2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { CodeEditor } from "@/components/code-editor";
 import { LivePreview } from "@/components/live-preview";
-import { generateCodeAction, improveCodeAction } from "@/app/actions";
+import { generateCodeAction } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -20,10 +21,9 @@ export default function Home() {
 </div>`
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [isImproving, setIsImproving] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
-  const isInitialCode = generatedCode.includes("Welcome to Code Weaver");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -52,27 +52,8 @@ export default function Home() {
     setIsLoading(false);
   };
 
-  const handleImprove = async () => {
-    if (!prompt.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter improvement instructions in the text area.",
-        variant: "destructive",
-      });
-      return;
-    }
-    setIsImproving(true);
-    const result = await improveCodeAction({ code: generatedCode, prompt });
-    if (result.error) {
-      toast({
-        title: "Error",
-        description: result.error,
-        variant: "destructive",
-      });
-    } else {
-      setGeneratedCode(result.improvedCode);
-    }
-    setIsImproving(false);
+  const handleNavigateToConverter = () => {
+    router.push('/converter');
   };
 
   return (
@@ -84,9 +65,9 @@ export default function Home() {
               Code Weaver
             </h1>
          </div>
-         <Button onClick={handleImprove} disabled={isLoading || isImproving || isInitialCode}>
-              {isImproving ? <Loader className="animate-spin mr-2" /> : <Wand2 className="mr-2" />}
-              Improve
+         <Button onClick={handleNavigateToConverter} disabled={isLoading}>
+              <Wand2 className="mr-2" />
+              Code Converter
           </Button>
       </header>
       
@@ -99,7 +80,7 @@ export default function Home() {
               onChange={(e) => setPrompt(e.target.value)}
               className="resize-none font-body flex-grow text-base"
               rows={2}
-              disabled={isLoading || isImproving}
+              disabled={isLoading}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
@@ -107,7 +88,7 @@ export default function Home() {
                 }
               }}
             />
-            <Button type="submit" size="lg" disabled={isLoading || isImproving} className="w-full sm:w-auto">
+            <Button type="submit" size="lg" disabled={isLoading} className="w-full sm:w-auto">
               {isLoading ? (
                 <Loader className="animate-spin mr-2" />
               ) : (
