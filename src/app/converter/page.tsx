@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { convertCodeAction } from "@/app/actions";
-import { Loader, Wand2 } from "lucide-react";
+import { Loader, Wand2, Copy, Check } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CodeConverterPage() {
@@ -16,6 +16,7 @@ export default function CodeConverterPage() {
   const [targetLanguage, setTargetLanguage] = useState("python");
   const [outputCode, setOutputCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const { toast } = useToast();
 
   const handleConvert = async () => {
@@ -44,6 +45,25 @@ export default function CodeConverterPage() {
     }
     setIsLoading(false);
   };
+  
+  const handleCopy = async () => {
+    if (!outputCode.trim() || !navigator.clipboard) return;
+
+    try {
+      await navigator.clipboard.writeText(outputCode);
+      toast({ title: "Code copied to clipboard!" });
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+      toast({
+        title: "Error",
+        description: "Could not copy code.",
+        variant: "destructive",
+      });
+    }
+  };
+
 
   return (
     <div className="bg-slate-50 min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center">
@@ -96,7 +116,18 @@ export default function CodeConverterPage() {
             </div>
 
             <div className="space-y-1 flex flex-col">
-               <Label htmlFor="outputCode" className="font-semibold text-slate-700">Output</Label>
+               <div className="flex justify-between items-center">
+                 <Label htmlFor="outputCode" className="font-semibold text-slate-700">Output</Label>
+                 <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleCopy}
+                    disabled={isLoading || !outputCode.trim()}
+                    aria-label="Copy code"
+                  >
+                    {isCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+               </div>
                <div className="bg-slate-100 p-4 rounded-md flex-grow overflow-auto mt-1">
                 {isLoading ? (
                   <div className="space-y-2">
