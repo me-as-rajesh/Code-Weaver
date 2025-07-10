@@ -66,9 +66,11 @@ export default function CodeConverterPage() {
 
 
   return (
-    <div className="bg-slate-50 min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center">
-      <a href="/" className="text-primary mb-4 hover:underline self-start">← Back to Code Weaver</a>
-      <Card className="w-full max-w-4xl shadow-lg">
+    <div className="bg-slate-50 min-h-screen p-4 sm:p-8 flex flex-col">
+      <div className="flex-shrink-0 mb-4">
+        <a href="/" className="text-primary hover:underline">← Back to Code Weaver</a>
+      </div>
+      <Card className="w-full max-w-4xl mx-auto shadow-lg flex-grow flex flex-col">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center text-slate-800">
             Code Converter
@@ -77,17 +79,17 @@ export default function CodeConverterPage() {
             Translate code between different programming languages. The source language is automatically detected.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <div>
+        <CardContent className="space-y-6 flex-grow flex flex-col">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 flex-grow">
+            <div className="space-y-4 flex flex-col">
+              <div className="flex flex-col flex-grow">
                 <Label htmlFor="inputCode" className="font-semibold text-slate-700">Input Code</Label>
                 <Textarea
                   id="inputCode"
                   placeholder="Enter code to convert"
                   value={inputCode}
                   onChange={(e) => setInputCode(e.target.value)}
-                  className="h-64 mt-1 font-code"
+                  className="h-64 mt-1 font-code flex-grow"
                   disabled={isLoading}
                 />
               </div>
@@ -144,7 +146,7 @@ export default function CodeConverterPage() {
             </div>
           </div>
           
-          <div className="text-center pt-4">
+          <div className="text-center pt-4 flex-shrink-0">
             <Button onClick={handleConvert} size="lg" className="bg-green-600 text-white hover:bg-green-700" disabled={isLoading}>
               {isLoading ? <Loader className="animate-spin mr-2" /> : <Wand2 className="mr-2" />}
               Convert
