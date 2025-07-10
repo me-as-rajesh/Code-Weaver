@@ -112,6 +112,15 @@ export default function CodeConverterPage() {
                     <SelectItem value="rust">Rust</SelectItem>
                     <SelectItem value="php">PHP</SelectItem>
                     <SelectItem value="kotlin">Kotlin</SelectItem>
+                    <SelectItem value="react">React</SelectItem>
+                    <SelectItem value="vue-next">Vue</SelectItem>
+                    <SelectItem value="svelte">Svelte</SelectItem>
+                    <SelectItem value="preact">Preact</SelectItem>
+                    <SelectItem value="solid">Solid</SelectItem>
+                    <SelectItem value="angular">Angular</SelectItem>
+                    <SelectItem value="astro">Astro</SelectItem>
+                    <SelectItem value="react-native">React Native</SelectItem>
+                    <SelectItem value="flutter">Flutter</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
